@@ -2,7 +2,6 @@ import { useForm } from 'react-hook-form';
 
 export function Home() {
     const { register,
-        handleSubmit,
         formState: { errors },
         reset } = useForm({ mode: 'onBlur' });
       //Arrow Function
