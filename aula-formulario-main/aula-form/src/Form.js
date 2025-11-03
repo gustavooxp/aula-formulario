@@ -1,24 +1,30 @@
 import { useForm } from 'react-hook-form';
-import React, {useState, UseEffect} from "react";
+import React, {useState} from "react";
 
 export function Form() {
 
-    const [dados, setDados] = useState({mensagem:"..."});
+    const [mensagem, setMensagem] = useState("");
 
     const { register,
         handleSubmit,
         formState: { errors },
         reset } = useForm({ mode: 'onBlur' });
       //Arrow Function
-      const onSubmit = (data) => {
-    
-        fetch("http://localhost:8080")
-        .then((response) => response.json())
-        .then((data) => setDados(data))
+      const onSubmit = async () => {
+     
+        try {
+            const response = await fetch('http://localhost:8080/api/mensagem');
+            if (!response.ok) throw new Error('Erro na requisição');
 
-        console.log(dados.mensagem);
+            const data = await response.json(); //converte a resposta para json
+            setMensagem(data.mensagem); //atualiza o estado com a mensagem recebida
+      } catch (error) {
+            console.error('Erro ao buscar a mensagem:', error);
+            setMensagem('Erro ao buscar a mensagem no servidor.');
     
       }
+    }
+
     return (
         <div>
             <h1 className='text-3xl text-900 mb-4'>Criando Formulários</h1>
@@ -59,6 +65,7 @@ export function Form() {
                 <button className="w-1/2 mt-2 p-3 text-white rounded-lg bg-sky-500 hover:bg-sky-700" type='submit'>Enviar</button>
                 </div>
             </form>
+            {mensagem}
         </div> 
             )
 }
