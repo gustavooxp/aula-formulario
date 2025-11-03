@@ -1,6 +1,10 @@
 import { useForm } from 'react-hook-form';
+import React, {useState, UseEffect} from "react";
 
 export function Form() {
+
+    const [dados, setDados] = useState({mensagem:"..."});
+
     const { register,
         handleSubmit,
         formState: { errors },
@@ -8,9 +12,11 @@ export function Form() {
       //Arrow Function
       const onSubmit = (data) => {
     
-        alert("Formulário enviado: " + JSON.stringify(data));
-        console.log("Dados enviados com sucesso", data)
-        reset();
+        fetch("http://localhost:8080")
+        .then((response) => response.json())
+        .then((data) => setDados(data))
+
+        console.log(dados.mensagem);
     
       }
     return (
