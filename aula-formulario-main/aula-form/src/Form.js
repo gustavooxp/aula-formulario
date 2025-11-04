@@ -13,12 +13,26 @@ export function Form() {
       const onSubmit = async () => {
      
         try {
-            const response = await fetch('http://localhost:8080/api/mensagem');
-            if (!response.ok) throw new Error('Erro na requisição');
-
-            const data = await response.json(); //converte a resposta para json
-            setMensagem(data.mensagem); //atualiza o estado com a mensagem recebida
-      } catch (error) {
+            const response = await fetch('http://localhost:8080/api/cadastro',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify(data),                
+                }
+            );
+            if (!response.ok) {
+                const mensagemSucesso = await response.text();
+                setMensagem({textmensagemSucesso})
+                console.log("Resposta do backend", mensagemSucesso);
+                reset()
+            } else {
+                const mensagemFalhou = await response.text();
+                setMensagem({mensagemFalhou})
+                console.error('Erro ao cadastrar.');
+            }
+        } catch (error) {
             console.error('Erro ao buscar a mensagem:', error);
             setMensagem('Erro ao buscar a mensagem no servidor.');
     
