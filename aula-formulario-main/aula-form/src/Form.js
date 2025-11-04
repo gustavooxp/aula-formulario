@@ -10,7 +10,7 @@ export function Form() {
         formState: { errors },
         reset } = useForm({ mode: 'onBlur' });
       //Arrow Function
-      const onSubmit = async () => {
+      const onSubmit = async (data) => {
      
         try {
             const response = await fetch('http://localhost:8080/api/cadastro',
@@ -22,15 +22,16 @@ export function Form() {
                     body: JSON.stringify(data),                
                 }
             );
-            if (!response.ok) {
+            if (response.ok) {
                 const mensagemSucesso = await response.text();
-                setMensagem({textmensagemSucesso})
+                setMensagem({mensagemSucesso})
                 console.log("Resposta do backend", mensagemSucesso);
                 reset()
             } else {
                 const mensagemFalhou = await response.text();
                 setMensagem({mensagemFalhou})
                 console.error('Erro ao cadastrar.');
+ 
             }
         } catch (error) {
             console.error('Erro ao buscar a mensagem:', error);
@@ -79,7 +80,6 @@ export function Form() {
                 <button className="w-1/2 mt-2 p-3 text-white rounded-lg bg-sky-500 hover:bg-sky-700" type='submit'>Enviar</button>
                 </div>
             </form>
-            {mensagem}
         </div> 
             )
 }
