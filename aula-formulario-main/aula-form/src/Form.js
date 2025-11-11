@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import React, {useState} from "react";
+import React, { useState } from "react";
 
 export function Form() {
 
@@ -9,41 +9,41 @@ export function Form() {
         handleSubmit,
         formState: { errors },
         reset } = useForm({ mode: 'onBlur' });
-      //Arrow Function
-      const onSubmit = async (data) => {
-     
+    //Arrow Function
+    const onSubmit = async (data) => {
+
         try {
             const response = await fetch('http://localhost:8080/api/cadastro',
                 {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json' 
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(data),                
+                    body: JSON.stringify(data),
                 }
             );
             if (response.ok) {
                 const mensagemSucesso = await response.text();
-                setMensagem({mensagemSucesso})
+                setMensagem({ type: 'sucesso', text: mensagemSucesso })
                 console.log("Resposta do backend", mensagemSucesso);
                 reset()
             } else {
                 const mensagemFalhou = await response.text();
-                setMensagem({mensagemFalhou})
+                setMensagem({ type: 'falhou', text: mensagemFalhou })
                 console.error('Erro ao cadastrar.');
- 
+
             }
         } catch (error) {
             console.error('Erro ao buscar a mensagem:', error);
-            setMensagem('Erro ao buscar a mensagem no servidor.');
-    
-      }
+            setMensagem({type: 'falhou', text: 'Erro ao buscar a mensagem no servidor.'});
+
+        }
     }
 
     return (
         <div>
-            <h1 className='text-3xl text-900 mb-4'>Criando Formulários</h1>
-            <form className='space-y-2'onSubmit={handleSubmit(onSubmit)} noValidate>
+            <h1 className='text-3xl text-900 mb-4'>Cadastrar Usuários</h1>
+            <form className='space-y-2' onSubmit={handleSubmit(onSubmit)} noValidate>
                 <label className='block text-sm font-medium text-gray-700'>Nome </label>
                 <input
                     placeholder='Digite seu nome'
@@ -77,9 +77,16 @@ export function Form() {
                 /><br />
                 {errors.dataNascimento && <p style={{ color: "red" }}>{errors.dataNascimento.message}</p>}
                 <div className='flex justify-center'>
-                <button className="w-1/2 mt-2 p-3 text-white rounded-lg bg-sky-500 hover:bg-sky-700" type='submit'>Enviar</button>
+                    <button className="w-1/2 mt-2 p-3 text-white rounded-lg bg-sky-500 hover:bg-sky-700" type='submit'>Enviar</button>
                 </div>
             </form>
-        </div> 
-            )
+
+            {mensagem && (
+                <div className={`p-3 rounded-lg text-center ${mensagem.type === 'sucesso' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}>{mensagem.text}
+                </div>
+            )}
+
+        </div>
+    )
 }
