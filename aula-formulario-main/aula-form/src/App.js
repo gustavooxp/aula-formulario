@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Header } from './Header';
 import { Home } from './Home';
 import { Consult } from './Consult';
+import Evento from './Evento';
 
 function App() {
  
@@ -19,6 +20,7 @@ function App() {
             <Route path='/' element={<Home/>} />
             <Route path='/consultar' element={<Consult/>} />
             <Route path='/cadastrar' element={<Form/>} />
+            <Route path='/evento' element={<Evento/>} />
           </Routes>
         </main>
         </div>

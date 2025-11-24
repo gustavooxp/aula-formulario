@@ -7,6 +7,7 @@ export function Header() {
 
                 <Link to="/">INÍCIO</Link>
                 <Link to="/consultar">CONSULTAR</Link>
+                <Link to="/evento">CADASTRAR EVENTO</Link>
             </nav>
         </header>
     )
