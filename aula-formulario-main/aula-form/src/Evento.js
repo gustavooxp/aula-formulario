@@ -13,12 +13,14 @@ export default function Evento() {
     reset
   } = useForm({ mode: "onBlur" });
 
-  // Função para converter datetime-local para "dd/MM/yyyy HH:mm"
+  // Converte ISO → dd/MM/yyyy HH:mm
   const formatarData = (valor) => {
     const data = new Date(valor);
+
     const dia = String(data.getDate()).padStart(2, "0");
     const mes = String(data.getMonth() + 1).padStart(2, "0");
     const ano = data.getFullYear();
+
     const hora = String(data.getHours()).padStart(2, "0");
     const minuto = String(data.getMinutes()).padStart(2, "0");
 
@@ -28,10 +30,17 @@ export default function Evento() {
   const onSubmit = async (data) => {
     try {
       const payload = {
-        ...data,
+        nome: data.nome,
+        descricao: data.descricao,
+        tipo: data.tipo,
+        local: data.local,
         dataInicio: formatarData(data.dataInicio),
         dataFinal: formatarData(data.dataFinal),
+        linkEvento: data.linkEvento || null,
+        linkImagem: data.linkImagem || null,
       };
+
+      console.log("Enviando:", payload);
 
       const response = await fetch(API_URL, {
         method: "POST",
@@ -47,21 +56,20 @@ export default function Evento() {
         setMensagem("Evento cadastrado com sucesso!");
         reset();
       } else {
-        setMensagem("Erro ao cadastrar o evento: " + texto);
+        setMensagem("Erro ao cadastrar: " + texto);
       }
     } catch (error) {
       console.error("Erro:", error);
-      setMensagem("Erro ao conectar com servidor.");
+      setMensagem("Erro ao conectar ao servidor.");
     }
   };
 
-  // Enum do backend
   const tiposEvento = [
     "CONGRESSO",
     "TREINAMENTO",
     "WORKSHOP",
-    "IMERSÃO",
-    "REUNIÃO",
+    "IMERSAO",
+    "REUNIAO",
     "HACKATON",
     "STARTUP"
   ];
@@ -75,25 +83,23 @@ export default function Evento() {
         {/* Nome */}
         <div>
           <label>Nome</label>
-          <input placeholder='Digite o nome do evento'
+          <input
+            placeholder="Digite o nome do evento"
             className="w-full border p-2 rounded"
             {...register("nome", { required: "O nome é obrigatório" })}
           />
-          {errors.nome && (
-            <p className="text-red-600">{errors.nome.message}</p>
-          )}
+          {errors.nome && <p className="text-red-600">{errors.nome.message}</p>}
         </div>
 
         {/* Descrição */}
         <div>
           <label>Descrição</label>
-          <textarea placeholder='Digite seu email'
+          <textarea
+            placeholder="Digite a descrição do evento"
             className="w-full border p-2 rounded"
             {...register("descricao", { required: "A descrição é obrigatória" })}
           />
-          {errors.descricao && (
-            <p className="text-red-600">{errors.descricao.message}</p>
-          )}
+          {errors.descricao && <p className="text-red-600">{errors.descricao.message}</p>}
         </div>
 
         {/* Tipo */}
@@ -105,26 +111,21 @@ export default function Evento() {
           >
             <option value="">Selecione...</option>
             {tiposEvento.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
+              <option key={t} value={t}>{t}</option>
             ))}
           </select>
-          {errors.tipo && (
-            <p className="text-red-600">{errors.tipo.message}</p>
-          )}
+          {errors.tipo && <p className="text-red-600">{errors.tipo.message}</p>}
         </div>
 
         {/* Local */}
         <div>
           <label>Local</label>
-          <input placeholder='Digite o local do evento'
+          <input
+            placeholder="Digite o local do evento"
             className="w-full border p-2 rounded"
             {...register("local", { required: "O local é obrigatório" })}
           />
-          {errors.local && (
-            <p className="text-red-600">{errors.local.message}</p>
-          )}
+          {errors.local && <p className="text-red-600">{errors.local.message}</p>}
         </div>
 
         {/* Data início */}
@@ -135,9 +136,7 @@ export default function Evento() {
             className="w-full border p-2 rounded"
             {...register("dataInicio", { required: "A data de início é obrigatória" })}
           />
-          {errors.dataInicio && (
-            <p className="text-red-600">{errors.dataInicio.message}</p>
-          )}
+          {errors.dataInicio && <p className="text-red-600">{errors.dataInicio.message}</p>}
         </div>
 
         {/* Data final */}
@@ -148,30 +147,29 @@ export default function Evento() {
             className="w-full border p-2 rounded"
             {...register("dataFinal", { required: "A data final é obrigatória" })}
           />
-          {errors.dataFinal && (
-            <p className="text-red-600">{errors.dataFinal.message}</p>
-          )}
+          {errors.dataFinal && <p className="text-red-600">{errors.dataFinal.message}</p>}
         </div>
 
-        {/* Link do evento (opcional) */}
+        {/* Link do evento */}
         <div>
           <label>Link do Evento (opcional)</label>
-          <input placeholder='Digite o link do evento'
+          <input
+            placeholder="Digite o link do evento"
             className="w-full border p-2 rounded"
             {...register("linkEvento")}
           />
         </div>
 
-        {/* Link da imagem (opcional) */}
+        {/* Link da imagem */}
         <div>
           <label>Link da Imagem (opcional)</label>
-          <input placeholder='Insira o link da imagem do evento'
+          <input
+            placeholder="Insira o link da imagem do evento"
             className="w-full border p-2 rounded"
             {...register("linkImagem")}
           />
         </div>
 
-        {/* Botão */}
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
@@ -182,9 +180,7 @@ export default function Evento() {
       </form>
 
       {mensagem && (
-        <p className="mt-4 text-lg font-medium text-green-700">
-          {mensagem}
-        </p>
+        <p className="mt-4 text-lg font-medium text-green-700">{mensagem}</p>
       )}
     </div>
   );
